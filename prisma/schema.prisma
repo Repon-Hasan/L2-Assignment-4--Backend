@@ -34,7 +34,7 @@ model Medicine {
 enum Role {
   USER
   ADMIN
-  LANDLORD
+  SELLER
 }
 model User {
   id            String    @id
