@@ -31,11 +31,16 @@ model Medicine {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
-
+enum Role {
+  USER
+  ADMIN
+  LANDLORD
+}
 model User {
   id            String    @id
   name          String
   email         String
+  role          Role     @default(USER) 
   emailVerified Boolean   @default(false)
   image         String?
   createdAt     DateTime  @default(now())

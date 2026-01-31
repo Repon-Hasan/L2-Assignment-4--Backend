@@ -15,4 +15,9 @@ export const auth = betterAuth({
       hash: hashPassword,
       verify: verifyPassword,
     },
+    user: {
+    additionalFields: {
+      role: true, // ✅ tell the adapter that role can be set
+    },
+  },
 });
