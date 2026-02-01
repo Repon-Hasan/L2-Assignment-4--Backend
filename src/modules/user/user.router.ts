@@ -2,6 +2,7 @@
 import { Router } from "express";
 import { currentUserController, userController } from "./user.controller";
 import { auth } from "../../lib/auth";
+import { requireAuth } from "../../middlewares/auth.middleware";
 
 
 const router = Router();
@@ -28,6 +29,7 @@ router.post("/logout", async (req, res) => {
 
 router.patch(
   "/me",
+  requireAuth,
   userController.updateMe
 );
 
