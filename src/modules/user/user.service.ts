@@ -26,3 +26,23 @@ export async function getCurrentUser(headers: Record<string, string | string[] |
 
   return user;
 }
+
+export const userService = {
+  updateCurrentUser: async (id: string, payload: any) => {
+    const updatedUser = await prisma.user.update({
+      where: { id },
+      data: payload,
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        role: true,
+        emailVerified: true,
+        createdAt: true,
+        updatedAt: true,
+      },
+    });
+
+    return updatedUser;
+  },
+};

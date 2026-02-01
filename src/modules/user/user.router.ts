@@ -1,6 +1,6 @@
 // backend/src/routes/user.router.ts
 import { Router } from "express";
-import { currentUserController } from "./user.controller";
+import { currentUserController, userController } from "./user.controller";
 import { auth } from "../../lib/auth";
 
 
@@ -25,5 +25,10 @@ router.post("/logout", async (req, res) => {
     });
   }
 });
+
+router.patch(
+  "/me",
+  userController.updateMe
+);
 
 export const userRouter = router;
