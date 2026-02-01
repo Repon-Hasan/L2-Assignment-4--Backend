@@ -4,6 +4,166 @@
 // Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
 // Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
 
+// generator client {
+//   provider = "prisma-client"
+//   output   = "../generated/prisma"
+// }
+
+// datasource db {
+//   provider = "postgresql"
+// }
+
+// model Medicine {
+//   id          String    @id @default(uuid())
+//   name        String
+//   genericName String?
+//   brand       String?
+//   category    String?
+//   description String?
+//   price       Float
+//   discount    Float     @default(0)
+//   stock       Int       @default(0)
+//   expiryDate  DateTime?
+//   sellerEmail String?
+//   image       String?
+//   status      String    @default("active")
+
+//   createdAt DateTime @default(now())
+//   updatedAt DateTime @updatedAt
+// }
+// enum Role {
+//  CUSTOMER
+//   ADMIN
+//   SELLER
+// }
+// model User {
+//   id            String    @id
+//   name          String
+//   email         String
+//   role          Role     @default(CUSTOMER) 
+//   emailVerified Boolean   @default(false)
+//   image         String?
+//   createdAt     DateTime  @default(now())
+//   updatedAt     DateTime  @updatedAt
+//   sessions      Session[]
+//   accounts      Account[]
+
+//   @@unique([email])
+//   @@map("user")
+// }
+
+// model Session {
+//   id        String   @id
+//   expiresAt DateTime
+//   token     String
+//   createdAt DateTime @default(now())
+//   updatedAt DateTime @updatedAt
+//   ipAddress String?
+//   userAgent String?
+//   userId    String
+//   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+//   @@unique([token])
+//   @@index([userId])
+//   @@map("session")
+// }
+
+// model Account {
+//   id                    String    @id
+//   accountId             String
+//   providerId            String
+//   userId                String
+//   user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+//   accessToken           String?
+//   refreshToken          String?
+//   idToken               String?
+//   accessTokenExpiresAt  DateTime?
+//   refreshTokenExpiresAt DateTime?
+//   scope                 String?
+//   password              String?
+//   createdAt             DateTime  @default(now())
+//   updatedAt             DateTime  @updatedAt
+
+//   @@index([userId])
+//   @@map("account")
+// }
+
+// model Verification {
+//   id         String   @id
+//   identifier String
+//   value      String
+//   expiresAt  DateTime
+//   createdAt  DateTime @default(now())
+//   updatedAt  DateTime @updatedAt
+
+//   @@index([identifier])
+//   @@map("verification")
+// }
+
+// model Cart {
+//   id       String      @id @default(uuid())
+//   user     User        @relation(fields: [userId], references: [id])
+//   userId   String
+//   items    CartItem[]
+//   updatedAt DateTime    @updatedAt
+// }
+
+// model CartItem {
+//   id         String   @id @default(uuid())
+//   cart       Cart     @relation(fields: [cartId], references: [id])
+//   cartId     String
+//   medicine   Medicine @relation(fields: [medicineId], references: [id])
+//   medicineId String
+//   quantity   Int      @default(1)
+// }
+
+// model Order {
+//   id             String      @id @default(uuid())
+//   user           User        @relation(fields: [userId], references: [id])
+//   userId         String
+//   items          OrderItem[]
+//   shippingAddress String
+//   totalAmount    Float
+//   status         OrderStatus @default(PENDING)
+//   createdAt      DateTime    @default(now())
+//   updatedAt      DateTime    @updatedAt
+// }
+
+// model OrderItem {
+//   id         String   @id @default(uuid())
+//   order      Order    @relation(fields: [orderId], references: [id])
+//   orderId    String
+//   medicine   Medicine @relation(fields: [medicineId], references: [id])
+//   medicineId String
+//   quantity   Int
+//   price      Float
+// }
+
+// model Review {
+//   id         String   @id @default(uuid())
+//   user       User     @relation(fields: [userId], references: [id])
+//   userId     String
+//   medicine   Medicine @relation(fields: [medicineId], references: [id])
+//   medicineId String
+//   rating     Int
+//   comment    String
+//   createdAt  DateTime @default(now())
+// }
+
+// enum Roles {
+//   CUSTOMER
+//   SELLER
+//   ADMIN
+// }
+
+// enum OrderStatus {
+//   PENDING
+//   SHIPPED
+//   DELIVERED
+// }
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
 generator client {
   provider = "prisma-client"
   output   = "../generated/prisma"
@@ -13,49 +173,67 @@ datasource db {
   provider = "postgresql"
 }
 
+enum Role {
+  CUSTOMER
+  ADMIN
+  SELLER
+}
+
+enum OrderStatus {
+  PENDING
+  SHIPPED
+  DELIVERED
+}
+
 model Medicine {
-  id          String    @id @default(uuid())
+  id          String   @id @default(uuid())
   name        String
   genericName String?
   brand       String?
   category    String?
   description String?
   price       Float
-  discount    Float     @default(0)
-  stock       Int       @default(0)
+  discount    Float    @default(0)
+  stock       Int      @default(0)
   expiryDate  DateTime?
   sellerEmail String?
   image       String?
-  status      String    @default("active")
+  status      String   @default("active")
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  // Back-relations
+  cartItems  CartItem[]
+  orderItems OrderItem[]
+  reviews    Review[]
 }
-enum Role {
- CUSTOMER
-  ADMIN
-  SELLER
-}
+
 model User {
   id            String    @id
   name          String
-  email         String
-  role          Role     @default(CUSTOMER) 
+  email         String    @unique
+  role          Role      @default(CUSTOMER)
   emailVerified Boolean   @default(false)
   image         String?
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
+  
   sessions      Session[]
   accounts      Account[]
+  
+  // Back-relations for Customer Features
+  carts         Cart[]
+  orders        Order[]
+  reviews       Review[]
 
-  @@unique([email])
   @@map("user")
 }
 
 model Session {
   id        String   @id
   expiresAt DateTime
-  token     String
+  token     String   @unique
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   ipAddress String?
@@ -63,7 +241,6 @@ model Session {
   userId    String
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  @@unique([token])
   @@index([userId])
   @@map("session")
 }
@@ -99,3 +276,56 @@ model Verification {
   @@index([identifier])
   @@map("verification")
 }
+
+model Cart {
+  id        String     @id @default(uuid())
+  user      User       @relation(fields: [userId], references: [id])
+  userId    String
+  items     CartItem[]
+  updatedAt DateTime   @updatedAt
+}
+
+model CartItem {
+  id         String   @id @default(uuid())
+  cart       Cart     @relation(fields: [cartId], references: [id])
+  cartId     String
+  medicine   Medicine @relation(fields: [medicineId], references: [id])
+  medicineId String
+  quantity   Int      @default(1)
+}
+
+model Order {
+  id              String      @id @default(uuid())
+  user            User        @relation(fields: [userId], references: [id])
+  userId          String
+  items           OrderItem[]
+  shippingAddress String
+  totalAmount     Float
+  status          OrderStatus @default(PENDING)
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+}
+
+model OrderItem {
+  id         String   @id @default(uuid())
+  order      Order    @relation(fields: [orderId], references: [id])
+  orderId    String
+  medicine   Medicine @relation(fields: [medicineId], references: [id])
+  medicineId String
+  quantity   Int
+  price      Float
+}
+
+model Review {
+  id         String   @id @default(uuid())
+  user       User     @relation(fields: [userId], references: [id])
+  userId     String
+  medicine   Medicine @relation(fields: [medicineId], references: [id])
+  medicineId String
+  rating     Int
+  comment    String
+  createdAt  DateTime @default(now())
+}
+
+
+
