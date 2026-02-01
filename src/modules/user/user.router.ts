@@ -27,10 +27,6 @@ router.post("/logout", async (req, res) => {
   }
 });
 
-router.patch(
-  "/me",
-  requireAuth,
-  userController.updateMe
-);
+router.patch("/users/me", requireAuth, userController.updateMe);
 
 export const userRouter = router;

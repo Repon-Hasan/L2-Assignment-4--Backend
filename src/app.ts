@@ -3,9 +3,11 @@ import cors from "cors"
 import { toNodeHandler } from "better-auth/node";
 import sellerRouter from "./modules/seller/seller.router"
 import { auth } from "./lib/auth";
+import cookieParser from "cookie-parser";
 import { userRouter } from "./modules/user/user.router";
 const app = express()
 app.use(express.json())
+app.use(cookieParser());
 // app.use( cors({
 //     origin: "http://localhost:3000", 
 //     methods: ["GET", "POST", "PUT", "DELETE"],  
@@ -13,7 +15,7 @@ app.use(express.json())
 //   }))
 app.use(cors({
     origin: "http://localhost:3000", // Replace with your frontend's origin
-    methods: ["GET", "POST", "PUT", "DELETE"], // Specify allowed HTTP methods
+    methods: ["GET", "POST", "PUT", "DELETE","PATCH"], // Specify allowed HTTP methods
     credentials: true, // Allow credentials (cookies, authorization headers, etc.)
   }))
 app.all("/api/auth/*splat", toNodeHandler(auth));

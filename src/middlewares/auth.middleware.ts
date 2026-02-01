@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express";
-import { auth } from "../lib/auth";
-import { toNodeHandler } from "better-auth/node";
+import { auth } from "../lib/auth"; // adjust path
+
 
 export const requireAuth = async (
   req: Request,
@@ -10,24 +10,20 @@ export const requireAuth = async (
   try {
     const session = await auth.api.getSession({
       headers: req.headers,
-      cookies: req.cookies,
+      cookies: req.cookies, // 🔥 REQUIRED for cookie auth
     });
-
+console.log("Header is ")
     if (!session || !session.user) {
-      return res.status(401).json({
-        success: false,
-        message: "User not authenticated",
-      });
+      return res
+        .status(401)
+        .json({ success: false, message: "Not authenticated" });
     }
 
-    // 🔥 Attach user to request
-    req.user = session.user;
-
+    req.user = session.user; // 👈 attach user
     next();
   } catch (error) {
-    return res.status(401).json({
-      success: false,
-      message: "Unauthorized",
-    });
+    return res
+      .status(401)
+      .json({ success: false, message: "Unauthorized" });
   }
 };
