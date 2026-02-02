@@ -314,6 +314,7 @@ model OrderItem {
   medicineId String
   quantity   Int
   price      Float
+  status     OrderStatus @default(PENDING)
 }
 
 model Review {

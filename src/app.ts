@@ -5,6 +5,9 @@ import sellerRouter from "./modules/seller/seller.router"
 import { auth } from "./lib/auth";
 import cookieParser from "cookie-parser";
 import { userRouter } from "./modules/user/user.router";
+import cartRoutes from "./modules/cart/cart.routes"
+import orderRoutes from "./modules/order/order.routes"
+
 const app = express()
 app.use(express.json())
 app.use(cookieParser());
@@ -21,5 +24,8 @@ app.use(cors({
 app.all("/api/auth/*splat", toNodeHandler(auth));
 app.use("/shop",sellerRouter)
 app.use("/api", userRouter);
+
+app.use("/api/cart", cartRoutes);
+app.use("/api/orders", orderRoutes);
 
 export default app
