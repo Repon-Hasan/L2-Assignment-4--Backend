@@ -36,6 +36,7 @@ const getMedicine=async()=>{
     return getMedicine
 }
 
+
 const getMyMedicine = async (sellerEmail: string) => {
   const medicines = await prisma.medicine.findMany({
     where: { sellerEmail },
@@ -44,6 +45,34 @@ const getMyMedicine = async (sellerEmail: string) => {
 };
 
 
+export const updateMedicineById = async (
+  id: string,
+  payload: any
+) => {
+  return prisma.medicine.update({
+    where: { id },
+    data: {
+      name: payload.name,
+      genericName: payload.genericName,
+      brand: payload.brand,
+      category: payload.category,
+      description: payload.description,
+      price: payload.price,
+      discount: payload.discount,
+      stock: payload.stock,
+      expiryDate: payload.expiryDate,
+      sellerEmail: payload.sellerEmail,
+      image: payload.image,
+      status: payload.status,
+    },
+  });
+};
+
+export const deleteMedicineById = async (id: string) => {
+  return prisma.medicine.delete({
+    where: { id },
+  });
+};
 
 
 export const sellerService={

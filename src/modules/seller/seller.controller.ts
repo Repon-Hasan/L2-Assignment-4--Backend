@@ -1,5 +1,5 @@
 import { Request, response, Response } from "express";
-import { sellerOrder, sellerService } from "./seller.services"
+import { deleteMedicineById, sellerOrder, sellerService, updateMedicineById } from "./seller.services"
 import { string } from "better-auth";
 
 
@@ -46,7 +46,50 @@ const getMyMedicineController = async (req: Request, res: Response) => {
 };
 
 
+// 🔹 UPDATE MEDICINE
+export const updateMedicine = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+    const payload = req.body;
 
+    const updatedMedicine =
+      await updateMedicineById(id, payload);
+
+    res.status(200).json({
+      success: true,
+      message: "Medicine updated successfully",
+      data: updatedMedicine,
+    });
+  } catch (error: any) {
+    console.error(error);
+
+    res.status(500).json({
+      success: false,
+      message: "Failed to update medicine",
+    });
+  }
+};
+
+// 🔹 DELETE MEDICINE
+export const deleteMedicine = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+
+    await deleteMedicineById(id);
+
+    res.status(200).json({
+      success: true,
+      message: "Medicine deleted successfully",
+    });
+  } catch (error: any) {
+    console.error(error);
+
+    res.status(500).json({
+      success: false,
+      message: "Failed to delete medicine",
+    });
+  }
+};
 
 export const sellerController={
     addMedicineController,getAllMedicine,getMyMedicineController
