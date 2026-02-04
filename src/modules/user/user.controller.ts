@@ -1,6 +1,6 @@
 // backend/src/controllers/user.controller.ts
 import { Request, Response } from "express";
-import { getCurrentUser, userService } from "./user.service";
+import { getAllUsers, getCurrentUser, userService } from "./user.service";
 ;
 
 export async function currentUserController(req: Request, res: Response) {
@@ -47,3 +47,20 @@ export const userController = {
     }
   },
 };
+
+export const getAllUser=async(req:Request,res:Response)=>{
+  try {
+        const user = await getAllUsers();
+
+    if (!user) {
+      return res.status(401).json({ message: "Unauthorized" });
+    }
+
+    return res.json({ user });
+  } catch (error) {
+       res.status(500).json({
+        success: false,
+        message: error.message || "Failed to update profile",
+      });
+  }
+}

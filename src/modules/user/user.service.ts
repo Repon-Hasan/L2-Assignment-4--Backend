@@ -27,6 +27,18 @@ export async function getCurrentUser(headers: Record<string, string | string[] |
   return user;
 }
 
+export async function getAllUsers() {
+  return prisma.user.findMany({
+    where: {
+      role: {
+        in: ["CUSTOMER", "SELLER"],
+      },
+    },
+  });
+}
+
+
+
 export const userService = {
   updateCurrentUser: async (id: string, payload: any) => {
     const updatedUser = await prisma.user.update({

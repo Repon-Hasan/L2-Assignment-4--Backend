@@ -1,6 +1,6 @@
 // backend/src/routes/user.router.ts
 import { Router } from "express";
-import { currentUserController, userController } from "./user.controller";
+import { currentUserController, getAllUser, userController } from "./user.controller";
 import { auth } from "../../lib/auth";
 import { requireAuth } from "../../middlewares/auth.middleware";
 
@@ -26,6 +26,8 @@ router.post("/logout", async (req, res) => {
     });
   }
 });
+
+router.get("/users",getAllUser)
 
 router.patch("/users/me", requireAuth, userController.updateMe);
 
