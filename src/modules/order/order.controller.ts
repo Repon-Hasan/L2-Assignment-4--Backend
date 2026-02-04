@@ -21,7 +21,7 @@ export const getOrderStatus = async (req: any, res: Response) => {
     const { id } = req.params;
 
     const order = await orderService.getOrderById(id);
-
+            
     if (!order) {
       return res.status(404).json({
         success: false,
@@ -40,3 +40,53 @@ export const getOrderStatus = async (req: any, res: Response) => {
     });
   }
 };
+
+
+export const getOrdersByUser = async (req: Request, res: Response) => {
+  try {
+    const { userId } = req.params;
+
+    const orders = await orderService.getOrdersByUserId(userId);
+
+    if (!orders || orders.length === 0) {
+      return res.status(404).json({
+        success: false,
+        message: "No orders found for this user",
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      orders,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      success: false,
+      message: "Failed to fetch user orders",
+    });
+  }
+};
+
+
+
+
+export const getSellerOrdersController = async (req: Request, res: Response) => {
+  try {
+    const { email } = req.params;
+
+    const result = await orderService.getSellerOrders(email);
+
+    res.status(200).json({
+      success: true,
+      data: result,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Failed to fetch seller orders",
+    });
+  }
+};
+
+

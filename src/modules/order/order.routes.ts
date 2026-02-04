@@ -6,5 +6,10 @@ const router = Router();
 
 router.post("/create", requireAuth, orderController.placeOrder);
 router.get("/", requireAuth, orderController.getOrders);
-router.get("/:id", requireAuth, orderController.getOrderStatus);
+router.get("/user/:userId", orderController.getOrdersByUser);
+router.get(
+  "/seller/:email",
+  requireAuth,
+  orderController.getSellerOrdersController
+);
 export default router;

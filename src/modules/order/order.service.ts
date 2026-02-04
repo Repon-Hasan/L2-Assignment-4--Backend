@@ -29,13 +29,43 @@ export const placeOrder = async (userId: string, shippingAddress: string) => {
 };
 
 export const getOrders = async (userId: string) => {
-  return prisma.order.findMany({ where: { userId }, include: { items: { include: { medicine: true } } } });
+  return prisma.order.findMany();
 };
 
-export const getOrderById = async (orderId: string) => {
-  return prisma.order.findUnique({
+export const getOrdersByUserId = async (userId: string) => {
+  return prisma.order.findMany({
     where: {
-      id:orderId
-    }
+      userId,
+    },
+    orderBy: {
+      createdAt: "desc",
+    },
   });
 };
+
+
+
+export const getSellerOrders = async (sellerEmail: string) => {
+  const medicines = await prisma.medicine.findMany({
+    where: { sellerEmail },
+    select: { id: true },
+  });
+
+  const medicineIds = medicines.map(m => m.id);
+        
+  if (medicineIds.length === 0) return [];
+
+  const orderItems = await prisma.orderItem.findMany({
+    where: {
+      medicineId: { in: medicineIds },
+    },
+    include: {
+      medicine: true,
+      order: { include: { user: true } },
+    },
+  });
+  
+
+  return orderItems;
+};
+

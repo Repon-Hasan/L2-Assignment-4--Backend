@@ -15,32 +15,37 @@ interface CreateMedicinePayload {
   status?: string;
 }
 
-const createMedicine=async(payload:CreateMedicinePayload)=>{
-const medicine=await prisma.medicine.create({
-data:{
-   ...payload,
-        discount: payload.discount || 0,
-        stock: payload.stock || 0,
-        status: payload.status || "active",
-}
-})
-    console.log("Medicine added to DB:", medicine);
-    return medicine;
-}
+const createMedicine = async (payload: CreateMedicinePayload) => {
+  const medicine = await prisma.medicine.create({
+    data: {
+      ...payload,
+      price: Number(payload.price), // ensure float
+      discount: Number(payload.discount) || 0,
+      stock: Number(payload.stock) || 0,
+      expiryDate: payload.expiryDate ? new Date(payload.expiryDate) : null,
+      status: payload.status || "active",
+    },
+  });
+  console.log("Medicine added to DB:", medicine);
+  return medicine;
+};
+
 
 const getMedicine=async()=>{
     const getMedicine=await prisma.medicine.findMany()
     return getMedicine
 }
 
-const getSingleMedicine=async(id:string)=>{
-   const result= await prisma.medicine.findUnique({
-    where:{
-        id
-    }
-   })
-   return result
-}
+const getMyMedicine = async (sellerEmail: string) => {
+  const medicines = await prisma.medicine.findMany({
+    where: { sellerEmail },
+  });
+  return medicines;
+};
+
+
+
+
 export const sellerService={
-    createMedicine,getMedicine,getSingleMedicine
+    createMedicine,getMedicine,getMyMedicine
 }
