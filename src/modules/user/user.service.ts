@@ -58,3 +58,28 @@ export const userService = {
     return updatedUser;
   },
 };
+
+
+const updateUserStatus = async (
+  userId: string,
+  status: "ACTIVE" | "BANNED"
+) => {
+  // check if user exists
+  const existingUser = await prisma.user.findUnique({
+    where: { id: userId },
+  });
+
+  if (!existingUser) {
+    throw new Error("User not found");
+  }
+
+  return prisma.user.update({
+    where: { id: userId },
+    data: { status },
+  });
+};
+
+export const userServices = {
+  
+  updateUserStatus,
+};

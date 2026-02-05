@@ -1,6 +1,6 @@
 // backend/src/controllers/user.controller.ts
 import { Request, Response } from "express";
-import { getAllUsers, getCurrentUser, userService } from "./user.service";
+import { getAllUsers, getCurrentUser, userService, userServices } from "./user.service";
 ;
 
 export async function currentUserController(req: Request, res: Response) {
@@ -64,3 +64,23 @@ export const getAllUser=async(req:Request,res:Response)=>{
       });
   }
 }
+
+export const updateUserStatus = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+    const { status } = req.body;
+
+    if (!["ACTIVE", "BANNED"].includes(status)) {
+      return res.status(400).json({ message: "Invalid status" });
+    }
+
+    const user = await userServices.updateUserStatus(id, status);
+
+    res.status(200).json({
+      message: "User status updated successfully",
+      user,
+    });
+  } catch (error: any) {
+    res.status(500).json({ message: error.message });
+  }
+};
