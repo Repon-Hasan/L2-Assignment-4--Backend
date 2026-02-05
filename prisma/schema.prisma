@@ -208,27 +208,51 @@ model Medicine {
   orderItems OrderItem[]
   reviews    Review[]
 }
-
+enum UserStatus {
+  ACTIVE
+  BANNED
+}
 model User {
-  id            String    @id
+  id            String      @id
   name          String
-  email         String    @unique
-  role          Role      @default(CUSTOMER)
-  emailVerified Boolean   @default(false)
+  email         String      @unique
+  role          Role        @default(CUSTOMER)
+  status        UserStatus  @default(ACTIVE) // ✅ added
+  emailVerified Boolean     @default(false)
   image         String?
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
   
   sessions      Session[]
   accounts      Account[]
   
-  // Back-relations for Customer Features
   carts         Cart[]
   orders        Order[]
   reviews       Review[]
 
   @@map("user")
 }
+
+// model User {
+//   id            String    @id
+//   name          String
+//   email         String    @unique
+//   role          Role      @default(CUSTOMER)
+//   emailVerified Boolean   @default(false)
+//   image         String?
+//   createdAt     DateTime  @default(now())
+//   updatedAt     DateTime  @updatedAt
+  
+//   sessions      Session[]
+//   accounts      Account[]
+  
+//   // Back-relations for Customer Features
+//   carts         Cart[]
+//   orders        Order[]
+//   reviews       Review[]
+
+//   @@map("user")
+// }
 
 model Session {
   id        String   @id
