@@ -44,6 +44,13 @@ const getMyMedicine = async (sellerEmail: string) => {
   return medicines;
 };
 
+const getSingleMedicine = async (id: string) => {
+  const medicines = await prisma.medicine.findUnique({
+    where: { id },
+  });
+  return medicines;
+};
+
 
 export const updateMedicineById = async (
   id: string,
@@ -76,5 +83,5 @@ export const deleteMedicineById = async (id: string) => {
 
 
 export const sellerService={
-    createMedicine,getMedicine,getMyMedicine
+    createMedicine,getMedicine,getMyMedicine,getSingleMedicine
 }

@@ -44,6 +44,11 @@ export const auth = betterAuth({
   user: {
     additionalFields: {
       role: true,
+      status: {
+        type: "string",
+        required: false,
+        defaultValue: "ACTIVE",
+      },
     },
   },
   cookies: {
