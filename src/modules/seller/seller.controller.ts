@@ -1,5 +1,5 @@
 import { Request, response, Response } from "express";
-import { deleteMedicineById, sellerOrder, sellerService, updateMedicineById } from "./seller.services"
+import { deleteMedicineById, sellerOrder, sellerService, updateMedicineById, updateOrderItemStatusService } from "./seller.services"
 import { string } from "better-auth";
 import { prisma } from "../../lib/prisma";
 import { OrderStatus, Role, UserStatus } from "../../../generated/prisma/enums";
@@ -202,6 +202,64 @@ export const getAdminDashboardStats = async (req: Request, res: Response) => {
 };
 
 
+const updateOrderItemStatus = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+    const { status } = req.body;
+
+    const updated = await sellerService.updateOrderItemStatusInDB(
+      id,
+      status
+    );
+
+    res.status(200).json({
+      success: true,
+      message: "Order status updated",
+      data: updated,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Failed to update status",
+    });
+  }
+};
+
+
+export const updateOrderItemStatusController = async (
+  req: Request,
+  res: Response
+) => {
+  try {
+    const { id } = req.params;
+    const { status } = req.body;
+
+    if (!Object.values(OrderStatus).includes(status)) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid order status",
+      });
+    }
+
+    const result = await updateOrderItemStatusService(
+      id,
+      status as OrderStatus
+    );
+
+    return res.status(200).json({
+      success: true,
+      message: "Order item status updated",
+      data: result,
+    });
+  } catch (error) {
+    console.error("Update order item error:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Failed to update order item status",
+    });
+  }
+};
+
 export const sellerController={
-    addMedicineController,getAllMedicine,getMyMedicineController,getSingleMedicineController
+    addMedicineController,getAllMedicine,getMyMedicineController,getSingleMedicineController,updateOrderItemStatus
 }

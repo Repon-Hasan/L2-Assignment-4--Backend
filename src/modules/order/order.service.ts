@@ -34,14 +34,24 @@ export const getOrders = async (userId: string) => {
 
 export const getOrdersByUserId = async (userId: string) => {
   return prisma.order.findMany({
-    where: {
-      userId,
-    },
-    orderBy: {
-      createdAt: "desc",
+    where: { userId },
+    orderBy: { createdAt: "desc" },
+    include: {
+      items: {
+        include: {
+          medicine: {
+            select: {
+              id: true,
+              name: true,
+              image: true,
+            },
+          },
+        },
+      },
     },
   });
 };
+
 
 
 
@@ -64,8 +74,6 @@ export const getSellerOrders = async (sellerEmail: string) => {
       order: { include: { user: true } },
     },
   });
-  
-
   return orderItems;
 };
 

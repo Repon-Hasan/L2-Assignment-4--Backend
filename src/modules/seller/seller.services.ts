@@ -1,3 +1,4 @@
+import { OrderStatus } from "../../../generated/prisma/enums";
 import { prisma } from "../../lib/prisma"
 
 interface CreateMedicinePayload {
@@ -82,6 +83,65 @@ export const deleteMedicineById = async (id: string) => {
 };
 
 
+const updateOrderItemStatusInDB = async (
+  orderItemId: string,
+  status: "PENDING" | "SHIPPED" | "DELIVERED"
+) => {
+  return prisma.orderItem.update({
+    where: { id: orderItemId },
+    data: { status },
+  });
+};
+
+
+
+
+export const updateOrderItemStatusService = async (
+  orderItemId: string,
+  status: OrderStatus
+) => {
+  // 1️⃣ Update OrderItem
+  const updatedItem = await prisma.orderItem.update({
+    where: { id: orderItemId },
+    data: { status },
+    include: {
+      order: {
+        include: {
+          items: true,
+        },
+      },
+    },
+  });
+
+  const orderId = updatedItem.orderId;
+
+  // 2️⃣ Get all order items for this order
+  const orderItems = updatedItem.order.items;
+
+  // 3️⃣ Determine new Order status
+  let newOrderStatus: OrderStatus = OrderStatus.PENDING;
+
+  if (orderItems.every(i => i.status === OrderStatus.DELIVERED)) {
+    newOrderStatus = OrderStatus.DELIVERED;
+  } else if (orderItems.some(i => i.status === OrderStatus.SHIPPED)) {
+    newOrderStatus = OrderStatus.SHIPPED;
+  }
+
+  // 4️⃣ Update Order status
+  await prisma.order.update({
+    where: { id: orderId },
+    data: { status: newOrderStatus },
+  });
+
+  return {
+    updatedItem,
+    orderStatus: newOrderStatus,
+  };
+};
+
+
+
+
 export const sellerService={
-    createMedicine,getMedicine,getMyMedicine,getSingleMedicine
+    createMedicine,getMedicine,getMyMedicine,getSingleMedicine,updateOrderItemStatusInDB
 }
