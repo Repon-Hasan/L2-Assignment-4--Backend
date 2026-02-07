@@ -18,7 +18,7 @@ app.use(cookieParser());
 //     credentials: true,
 //   }))
 app.use(cors({
-    origin: "http://localhost:3000", // Replace with your frontend's origin
+    origin: "https://l2-assignment-4-frontend-b961.vercel.app", // Replace with your frontend's origin
     methods: ["GET", "POST", "PUT", "DELETE","PATCH"], // Specify allowed HTTP methods
     credentials: true, // Allow credentials (cookies, authorization headers, etc.)
   }))
