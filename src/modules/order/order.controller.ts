@@ -16,30 +16,30 @@ export const getOrders = async (req: any, res: Response) => {
   res.json({ success: true, orders });
 };
 
-export const getOrderStatus = async (req: any, res: Response) => {
-  try {
-    const { id } = req.params;
+// export const getOrderStatus = async (req: any, res: Response) => {
+//   try {
+//     const { id } = req.params;
 
-    const order = await orderService.getOrderById(id);
+//     const order = await orderService.getOrderById(id);
             
-    if (!order) {
-      return res.status(404).json({
-        success: false,
-        message: "Order not found",
-      });
-    }
+//     if (!order) {
+//       return res.status(404).json({
+//         success: false,
+//         message: "Order not found",
+//       });
+//     }
 
-    res.json({
-      success: true,
-      order,
-    });
-  } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: "Failed to fetch order details",
-    });
-  }
-};
+//     res.json({
+//       success: true,
+//       order,
+//     });
+//   } catch (error) {
+//     res.status(500).json({
+//       success: false,
+//       message: "Failed to fetch order details",
+//     });
+//   }
+// };
 
 
 export const getOrdersByUser = async (req: Request, res: Response) => {

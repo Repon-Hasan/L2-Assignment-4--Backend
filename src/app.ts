@@ -8,6 +8,7 @@ import { userRouter } from "./modules/user/user.router";
 import cartRoutes from "./modules/cart/cart.routes"
 import orderRoutes from "./modules/order/order.routes"
 import reviewRoutes from "./modules/reviewe/review.route"
+import { Request, Response } from "express";
 
 const app = express()
 app.use(express.json())
@@ -29,5 +30,9 @@ app.use("/api", userRouter);
 app.use("/api/cart", cartRoutes);
 app.use("/api/orders", orderRoutes);
 app.use("/api/reviews", reviewRoutes);
+
+app.get("/", (req: Request, res: Response) => {
+  res.status(200).json({ message: "Server is running!" });
+});
 
 export default app
